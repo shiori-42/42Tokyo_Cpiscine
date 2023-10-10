@@ -1,0 +1,76 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   number_to_words                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: syonekur < syonekur@student.42tokyo.jp>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/08/27 19:06:13 by syonekur          #+#    #+#             */
+/*   Updated: 2023/08/27 19:28:01 by syonekur         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "rush02.h"
+
+const char	*less_than_20[] = {"Zero", "One", "Two", "Three", "Four", "Five",
+		"Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
+		"Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+const char	*tens[] = {"", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty",
+		"Seventy", "Eighty", "Ninety"};
+const char	*thousands[] = {"", "Thousand", "Million", "Billion"};
+
+char	*number_to_word(unsigned int number)
+{
+	int		thousand_counter;
+	char	*result;
+	int		chunk;
+	char	*chunk_str;
+	char	*new_result;
+
+	if (number == 0)
+		return (strdup("Zero"));
+	thousand_counter = 0;
+	result = strdup("");
+	while (number > 0)
+	{
+		chunk = number % 1000;
+		if (chunk > 0)
+		{
+			chunk_str = chunk_to_word(chunk);
+			new_result = NULL;
+			asprintf(&new_result, "%s %s %s", chunk_str,
+				thousands[thousand_counter], result);
+			free(chunk_str);
+			free(result);
+			result = new_result;
+		}
+		number /= 1000;
+		thousand_counter++;
+	}
+	return (result);
+}
+
+char	*chunk_to_word(int number)
+{
+	char	*result;
+	char	*result;
+
+	if (number == 0)
+		return (strdup(""));
+	else if (number < 20)
+		return (strdup(less_than_20[number]));
+	else if (number < 100)
+	{
+		result = NULL;
+		asprintf(&result, "%s %s", tens[number / 10], less_than_20[number
+			% 10]);
+		return (result);
+	}
+	else
+	{
+		result = NULL;
+		asprintf(&result, "%s Hundred %s", less_than_20[number / 100],
+			chunk_to_word(number % 100));
+		return (result);
+	}
+}
